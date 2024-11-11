@@ -1,0 +1,2 @@
+
+There are several sources online with stream collections, see for example [[https://github.com/iptv-org/iptv/tree/master/streams][iptv/streams at master · iptv-org/iptv]], [[https://github.com/Free-TV/IPTV/tree/master][Free-TV/IPTV: M3U Playlist for free TV channels]] or [[https://github.com/mikepierce/internet-radio-streams][mikepierce/internet-radio-streams: Curated List of Internet Radio Streams]].
