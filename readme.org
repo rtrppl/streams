@@ -20,7 +20,7 @@ Then clone the repository:
 To run *streams*, you need to load the package by adding it to your .emacs or init.el:
 
 #+begin_src elisp
-(load "/path/to/metasearch/streams.el") 
+(load "/path/to/streams/streams.el") 
 #+end_src
 
 You should set a binding to either =streams= or =streams-select-stream-from-group=. All my *streams* bindings start with "C-c v", hence my choice below.
@@ -35,7 +35,7 @@ You should set a binding to either =streams= or =streams-select-stream-from-grou
 If you use straight, you could just add this:
 
 #+begin_src elisp
-(use-package metasearch
+(use-package streams
   :straight (:host github :repo "rtrppl/streams")
   :bind
   (:map global-map)
