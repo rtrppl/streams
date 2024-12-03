@@ -1,2 +1,64 @@
+#+title: streams.el
 
-There are several sources online with stream collections, see for example [[https://github.com/iptv-org/iptv/tree/master/streams][iptv/streams at master · iptv-org/iptv]], [[https://github.com/Free-TV/IPTV/tree/master][Free-TV/IPTV: M3U Playlist for free TV channels]] or [[https://github.com/mikepierce/internet-radio-streams][mikepierce/internet-radio-streams: Curated List of Internet Radio Streams]].
+*streams* is a small package that allows to collect and start online media streams. Added streams can be organized into groups or searched from a general list. [[https://mpv.io/][mpv]] is used to play the streams and therefore a requirement.
+
+** Change log
+
+*0.1* 
+- initial release
+
+** Installation
+
+As mentioned above, you need to install [[https://mpv.io/][mpv]].
+
+*** Option a)
+
+Then clone the repository:
+
+=git clone https://github.com/rtrppl/streams=
+
+To run *streams*, you need to load the package by adding it to your .emacs or init.el:
+
+#+begin_src elisp
+(load "/path/to/metasearch/streams.el") 
+#+end_src
+
+You should set a binding to either =streams= or =streams-select-stream-from-group=. All my *streams* bindings start with "C-c v", hence my choice below.
+
+#+begin_src elisp
+(global-set-key (kbd "C-c d S") 'streams)
+(global-set-key (kbd "C-c d s") 'streams-select-stream-from-group)
+#+end_src
+
+*** Option b)
+
+If you use straight, you could just add this:
+
+#+begin_src elisp
+(use-package metasearch
+  :straight (:host github :repo "rtrppl/streams")
+  :bind
+  (:map global-map)
+  ("C-c v S" . streams)
+  ("C-c v s" . streams-select-stream-from-group))
+#+end_src
+
+** Usage
+
+There are only five user-facing functions in *streams*:
+
+- *streams-add-webstream* adds a webstream
+
+- *streams-remove-webstream* removes a webstream
+
+- *streams-modify-group* creates groups and adds or removes a webstream to a specific group
+
+- *streams* starts a webstream
+
+- *streams-select-stream-from-group* start a webstream from a group
+
+** Finding streams
+
+There are several collections with online stream on GitHub, see for example [[https://github.com/iptv-org/iptv/tree/master/streams][iptv/streams at master · iptv-org/iptv]], [[https://github.com/Free-TV/IPTV/tree/master][Free-TV/IPTV: M3U Playlist for free TV channels]] or [[https://github.com/mikepierce/internet-radio-streams][mikepierce/internet-radio-streams: Curated List of Internet Radio Streams]].
+
+If you have [[https://github.com/yt-dlp/yt-dlp][yt-dlp]] installed, adding Youtube channels may also be possible.
