@@ -31,8 +31,11 @@
 ;; 0.1
 ;; - Initial release
 
+(require 'json)   ; For json-encode
+
 (defvar streams-player-cmd "mpv --force-window ") ;; for audio streams
 
+;;;###autoload
 (defun streams-add-webstream ()
   "Adds a webstream to the list of webstreams."
   (interactive)
@@ -48,6 +51,7 @@
 	(insert json-data)
 	(write-file "~/.streams-webstream-list")))))
 
+;;;###autoload
 (defun streams-modify-group ()
  "Adds or removes a webstream to a group."
  (interactive)
@@ -73,6 +77,7 @@
        (when (not (string-empty-p selection))
 	 (streams-add-or-remove-from-group selection group))))))
 	  
+;;;###autoload
 (defun streams-add-or-remove-from-group (pure-webstream group)
  "Adds a webstream to a group or removes it."
  (let* ((existing-key (streams-return-full-name-from-pure-selection pure-webstream))
@@ -104,10 +109,10 @@
  "Returns all webstreams for search set."
  (let* ((streams-list-webstreams (streams-get-list-of-webstreams))
 	(webstreams (hash-table-keys streams-list-webstreams))
-	(results))
+	(results '()))
     (dolist (item webstreams)
       (if (string-match-p (concat "::" group "::") item)
-	  (add-to-list 'results item)))
+	  (push item results)))
     (setq results (streams-pure-list results))
     results))
 
@@ -129,14 +134,14 @@ list-completion))
   "Returns a list of all sets."
   (let* ((streams-list-webstreams (streams-get-list-of-webstreams))
 	  (webstreams (hash-table-keys streams-list-webstreams))
- 	  (search-sets))
+ 	  (search-sets '()))
      (dolist (item webstreams)
        (with-temp-buffer
 	 (insert item)
 	 (goto-char (point-min))
 	 (while (and (re-search-forward "::\\(.*?\\)\\::" nil t)
 		     (not (string-empty-p (match-string 1))))
-	   (add-to-list 'search-sets (match-string 1)))))
+	   (push (match-string 1) search-sets))))
      search-sets))
 
 (defun streams-remove-webstream ()
@@ -179,7 +184,8 @@ list-completion))
     full-name))
 
 (defun streams-get-list-of-webstreams ()
- "Return streams-name-webstream, a hashtable that includes a list of names and locations of all webstreams."
+ "Return streams-name-webstream, a hashtable that includes a list of names and 
+locations of all webstreams."
  (let ((streams-file-exists (streams-check-for-webstream-file)))
    (when streams-file-exists
      (let ((streams-list-webstreams (make-hash-table :test 'equal)))
@@ -211,6 +217,7 @@ streams-list-webstreams))))
 	(result))
     (setq result (gethash selection streams-list-webstreams))))
 
+;;;###autoload
 (defun streams ()
   "Start a webstream from the list."
   (interactive)
@@ -226,6 +233,12 @@ streams-list-webstreams))))
     (if (not (member selection webstreams))
 	(message "This webstream does not exist.")
       (start-process-shell-command "streams.el" nil (concat streams-player-cmd "\"" (streams-return-webstream-for-selection selection) "\"")))))
+
+;;;###autoload
+(defun streams-play-url (url &optional dummy)
+  "Start a webstream or video from URL."
+  (interactive)
+  (start-process-shell-command "streams.el" nil (concat streams-player-cmd "\"" url "\"")))
 
 (defun streams-select-stream-from-group ()
   "Select a stream from a group."
@@ -259,10 +272,10 @@ streams-list-webstreams))))
   "Returns a list with all values for a search-set."
   (let* ((streams-list-webstreams (streams-get-list-of-webstreams))
 	(webstreams (hash-table-keys streams-list-webstreams))
-	(results))
+	(results '()))
     (dolist (item webstreams)
       (when (string-match-p (concat "::" set "::") item)
-	(add-to-list 'results item)))
+	(push item results)))
     results))
 
 
