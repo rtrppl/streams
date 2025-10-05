@@ -4,7 +4,7 @@
 
 ;; Maintainer: René Trappel <rtrappel@gmail.com>
 ;; URL:
-;; Version: 0.1
+;; Version: 0.1.1
 ;; Package-Requires: emacs "26"
 ;; Keywords: web
 
@@ -28,12 +28,17 @@
 ;; A package to collect webstreams and start them from your favorite
 ;; editor/os.
 ;;
+;; 0.1.1 
+;; - Added config file location.
+;;
 ;; 0.1
 ;; - Initial release
 
 (require 'json)   ; For json-encode
 
 (defvar streams-player-cmd "mpv --force-window ") ;; for audio streams
+(defvar streams-config-file "~/.streams-webstream-list")
+
 
 ;;;###autoload
 (defun streams-add-webstream ()
@@ -49,7 +54,7 @@
     (with-temp-buffer
       (let* ((json-data (json-encode streams-list-webstreams)))
 	(insert json-data)
-	(write-file "~/.streams-webstream-list")))))
+	(write-file streams-config-file)))))
 
 ;;;###autoload
 (defun streams-modify-group ()
@@ -94,7 +99,7 @@
  (let ((streams-list-webstreams (make-hash-table :test 'equal))
        (value))
    (with-temp-buffer
-     (insert-file-contents "~/.streams-webstream-list")
+     (insert-file-contents streams-config-file)
      (if (fboundp 'json-parse-buffer)
 	 (setq streams-list-webstreams (json-parse-buffer))))
    (setq value (gethash existing-key streams-list-webstreams))
@@ -103,7 +108,7 @@
    (with-temp-buffer
      (let* ((json-data (json-encode streams-list-webstreams)))
        (insert json-data)
-       (write-file "~/.streams-webstream-list")))))
+       (write-file streams-config-file)))))
 
 (defun streams-return-set-webstreams (group)
  "Returns all webstreams for search set."
@@ -163,7 +168,7 @@ list-completion))
 	    (with-temp-buffer
 	      (setq json-data (json-encode streams-list-webstreams))
 	      (insert json-data)
-	      (write-file "~/.streams-webstream-list")))))))
+	      (write-file streams-config-file)))))))
 
 (defun streams-pure-list (webstreams)
   "Create a list of webstreams without sets."
@@ -190,7 +195,7 @@ locations of all webstreams."
    (when streams-file-exists
      (let ((streams-list-webstreams (make-hash-table :test 'equal)))
        (with-temp-buffer
-	 (insert-file-contents "~/.streams-webstream-list")
+	 (insert-file-contents streams-config-file)
 	 (if (fboundp 'json-parse-buffer)
 	     (setq streams-list-webstreams (json-parse-buffer))))
 streams-list-webstreams))))
@@ -200,9 +205,9 @@ streams-list-webstreams))))
   (let ((streams-file-exists nil)
 	(streams-list-webstreams (make-hash-table :test 'equal))
 	(length-of-list))
-  (when (file-exists-p "~/.streams-webstream-list")
+  (when (file-exists-p streams-config-file)
     (with-temp-buffer
-	 (insert-file-contents "~/.streams-webstream-list")
+	 (insert-file-contents streams-config-file)
 	 (if (fboundp 'json-parse-buffer)
 	     (setq streams-list-webstreams (json-parse-buffer)))
 	 (setq length-of-list (length (hash-table-values streams-list-webstreams)))

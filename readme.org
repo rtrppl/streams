@@ -4,6 +4,9 @@
 
 ** Change log
 
+*0.1.1* 
+- Added config file location.
+
 *0.1* 
 - initial release
 
